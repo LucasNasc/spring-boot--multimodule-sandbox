@@ -3,10 +3,11 @@ package br.com.nascimento.resource;
 import br.com.nascimento.Cliente;
 import br.com.nascimento.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Affordance;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import javax.validation.Valid;
 
@@ -18,16 +19,18 @@ public class ClienteResource {
     @Autowired
     ClienteService service;
 
-//    @GetMapping()
-//    public ResponseEntity<List<Cliente>> listAll(){
-//        return ResponseEntity.ok(repository.findAll());
-//    }
+    @GetMapping()
+    public ResponseEntity<?> listAll(Pageable pageable){
+        return ResponseEntity.ok(service.listAll(pageable));
+    }
 
     @GetMapping(produces = {
             MediaType.APPLICATION_JSON_VALUE
     }, path = "/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        Cliente cliente = service.findById(id);
+        cliente.add(linkTo(methodOn(ClienteResource.class).findById(id)).withSelfRel().withType(HttpMethod.GET.name()));
+        return ResponseEntity.ok(cliente);
     }
 
 
@@ -38,18 +41,19 @@ public class ClienteResource {
         service.save(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-//
-//    @DeleteMapping(path = "/{id}")
-//    public ResponseEntity<?>  delete(@PathVariable("id") Long id){
-//        repository.delete(repository.findById(id).get());
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @PutMapping(path = "/{id}")
-//    public ResponseEntity<Customer>  update(@PathVariable("id") Long id,
-//                                            @RequestBody Customer customer){
-//        Customer updatedCustomer = repository.findById(id).get();
-//        updatedCustomer.setName(customer.getName());
-//        return ResponseEntity.ok(repository.save(updatedCustomer));
-//    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<?>  delete(@PathVariable("id") Long id){
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<?>  update(@PathVariable("id") Long id,
+                                            @RequestBody Cliente cliente){
+        cliente.setId(id);
+        Cliente client = service.update(cliente);
+        client.add(linkTo(methodOn(ClienteResource.class).findById(id)).withSelfRel().withType(HttpMethod.PUT.name()));
+        return ResponseEntity.ok(client);
+    }
 }
