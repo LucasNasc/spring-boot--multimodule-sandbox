@@ -1,5 +1,6 @@
 package br.com.nascimento.exception;
 
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -19,6 +20,8 @@ public class ExceptionBodyHelper {
                 obj -> BuildExceptionBodyhelper.getValidationErrorDetail(((MethodArgumentNotValidException) obj)));
         exceptionBodyHandler.put(ExceptionTypeEnum.RESOURCE_NOT_FOUND,
                 obj -> BuildExceptionBodyhelper.getResourceNotFoundBody((ResourceNotFoundException) obj));
+        exceptionBodyHandler.put(ExceptionTypeEnum.HTTP_MESSAGE_NOT_READABLE,
+                obj -> BuildExceptionBodyhelper.getResourceNotFoundBody((HttpMessageNotReadableException) obj));
     }
 
     public Object getExceptionBody(ExceptionTypeEnum exceptionTypeEnum, Exception exception) {

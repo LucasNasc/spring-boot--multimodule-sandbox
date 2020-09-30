@@ -21,7 +21,6 @@ public class ClienteServiceImpl implements ClienteService {
                                 .code(String.valueOf(HttpStatus.NOT_FOUND.value()))
                                 .description(String.format("Customer with id: %s not found! ", id))
                                 .build());
-
     }
 
     @Override
