@@ -15,16 +15,16 @@ public class ExceptionBodyHelper {
     private final Map<ExceptionTypeEnum, Function<Exception, Object>> exceptionBodyHandler = new HashMap<>();
 
     @PostConstruct
-    private void init(){
-        exceptionBodyHandler.put(ExceptionTypeEnum.ARGUMENT_NOT_VALID,
-                obj -> BuildExceptionBodyhelper.getValidationErrorDetail(((MethodArgumentNotValidException) obj)));
-        exceptionBodyHandler.put(ExceptionTypeEnum.RESOURCE_NOT_FOUND,
-                obj -> BuildExceptionBodyhelper.getResourceNotFoundBody((ResourceNotFoundException) obj));
-        exceptionBodyHandler.put(ExceptionTypeEnum.HTTP_MESSAGE_NOT_READABLE,
-                obj -> BuildExceptionBodyhelper.getResourceNotFoundBody((HttpMessageNotReadableException) obj));
+    private void init() {
+        exceptionBodyHandler.put(ExceptionTypeEnum.RESOURCE_NOT_FOUND, BuildExceptionBodyhelper::getResourceNotFoundBody);
+        exceptionBodyHandler.put(ExceptionTypeEnum.ARGUMENT_NOT_VALID, BuildExceptionBodyhelper::getValidationErrorDetail);
+        exceptionBodyHandler.put(ExceptionTypeEnum.HTTP_MESSAGE_NOT_READABLE, BuildExceptionBodyhelper::getHttpMessageNotReadable);
+        exceptionBodyHandler.put(ExceptionTypeEnum.INTERNAL_EXCEPTION, BuildExceptionBodyhelper::getInternalException);
     }
 
     public Object getExceptionBody(ExceptionTypeEnum exceptionTypeEnum, Exception exception) {
         return exceptionBodyHandler.get(exceptionTypeEnum).apply(exception);
-    };
+    }
+
+    ;
 }

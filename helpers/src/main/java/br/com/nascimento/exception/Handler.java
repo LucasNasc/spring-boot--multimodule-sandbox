@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,9 +38,26 @@ public class Handler extends ResponseEntityExceptionHandler {
 
     @Override
     @NonNull
-    public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                               HttpHeaders headers,
+                                                               HttpStatus status,
+                                                               WebRequest request) {
         ErrorDetail exceptionBody = (ErrorDetail) exceptionBodyHelper.getExceptionBody(ExceptionTypeEnum.HTTP_MESSAGE_NOT_READABLE, ex);
         return ResponseEntity.status(exceptionBody.getHttpStatusCode()).body(exceptionBody);
+    }
+
+    @Override
+    @NonNull
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
+                                                             @Nullable Object body,
+                                                             HttpHeaders headers,
+                                                             HttpStatus status,
+                                                             WebRequest request) {
+
+        ErrorDetail exceptionBody = (ErrorDetail) exceptionBodyHelper.getExceptionBody(ExceptionTypeEnum.INTERNAL_EXCEPTION, ex);
+        exceptionBody.setHttpStatusCode(status);
+        exceptionBody.setCode(String.valueOf(status.value()));
+        return ResponseEntity.status(status.value()).body(exceptionBody);
     }
 
 }

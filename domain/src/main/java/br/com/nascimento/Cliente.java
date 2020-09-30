@@ -14,7 +14,7 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 public class Cliente extends AbstractEntity {
 
-    @NotEmpty
+    @NotEmpty(message = "O Campo name e obrigatorio ")
     private String name;
 
     private Integer idade;

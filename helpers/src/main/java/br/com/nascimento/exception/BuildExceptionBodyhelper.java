@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 
 public abstract class BuildExceptionBodyhelper {
 
-    public static ErrorDetail getResourceNotFoundBody(ResourceNotFoundException ex) {
+    public static ErrorDetail getResourceNotFoundBody(Exception exception) {
+        ResourceNotFoundException ex = (ResourceNotFoundException) exception;
         return ErrorDetail.builder()
                 .title("Resource Not Found")
                 .httpStatusCode(ex.getHttpStatusCode())
@@ -22,8 +23,8 @@ public abstract class BuildExceptionBodyhelper {
                 .build();
     }
 
-    public static ErrorDetail getValidationErrorDetail(MethodArgumentNotValidException ex) {
-
+    public static ErrorDetail getValidationErrorDetail(Exception exception) {
+        MethodArgumentNotValidException ex = (MethodArgumentNotValidException) exception;
         return  ErrorDetail.builder()
                 .title("Field Validation Error")
                 .field(ex.getBindingResult()
@@ -31,25 +32,34 @@ public abstract class BuildExceptionBodyhelper {
                         .stream()
                         .map(FieldError::getField)
                         .collect(Collectors.joining(",")))
-                .developerMessage(ex.getBindingResult()
+                .developerMessage(ex.getMessage())
+                .httpStatusCode(HttpStatus.BAD_REQUEST)
+                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                .description(ex.getBindingResult()
                         .getFieldErrors()
                         .stream()
                         .map(FieldError::getDefaultMessage)
                         .collect(Collectors.joining(",")))
-                .httpStatusCode(HttpStatus.BAD_REQUEST)
-                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
-                .description(ex.getCause().getMessage())
                 .timestamp(DateUtils.formatOffsetDatetime(OffsetDateTime.now()))
                 .build();
     }
 
-    public static ErrorDetail getResourceNotFoundBody(HttpMessageNotReadableException ex) {
+    public static ErrorDetail getHttpMessageNotReadable(Exception exception) {
+        HttpMessageNotReadableException ex = (HttpMessageNotReadableException) exception;
         return ErrorDetail.builder()
-                .title("Resource Not Found")
+                .title("Method Argument Not Valid")
                 .httpStatusCode(HttpStatus.BAD_REQUEST)
                 .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
                 .description(ex.getMessage())
                 .developerMessage(ex.getCause().getMessage())
+                .timestamp(DateUtils.formatOffsetDatetime(OffsetDateTime.now()))
+                .build();
+    }
+    public static ErrorDetail getInternalException(Exception ex) {
+        return ErrorDetail.builder()
+                .title("Internal Error!")
+                .description(ex.getMessage())
+                .developerMessage(ex.getClass().getName())
                 .timestamp(DateUtils.formatOffsetDatetime(OffsetDateTime.now()))
                 .build();
     }

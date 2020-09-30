@@ -9,7 +9,8 @@ public enum ExceptionTypeEnum {
 
     ARGUMENT_NOT_VALID(MethodArgumentNotValidException.class),
     RESOURCE_NOT_FOUND(ResourceNotFoundException.class),
-    HTTP_MESSAGE_NOT_READABLE(HttpMessageNotReadableException.class);
+    HTTP_MESSAGE_NOT_READABLE(HttpMessageNotReadableException.class),
+    INTERNAL_EXCEPTION(Exception.class);
 
     ExceptionTypeEnum(Object exceptionType) {
         this.exceptionType = exceptionType;
