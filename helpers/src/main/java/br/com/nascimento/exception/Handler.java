@@ -47,7 +47,6 @@ public class Handler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    @NonNull
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
                                                              @Nullable Object body,
                                                              HttpHeaders headers,
@@ -58,6 +57,13 @@ public class Handler extends ResponseEntityExceptionHandler {
         exceptionBody.setHttpStatusCode(status);
         exceptionBody.setCode(String.valueOf(status.value()));
         return ResponseEntity.status(status.value()).body(exceptionBody);
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> genericException(Exception ex) {
+        ErrorDetail exceptionBody = (ErrorDetail) exceptionBodyHelper.getExceptionBody(ExceptionTypeEnum.INTERNAL_EXCEPTION, ex);
+        return ResponseEntity.status(exceptionBody.getHttpStatusCode()).body(exceptionBody);
     }
 
 }

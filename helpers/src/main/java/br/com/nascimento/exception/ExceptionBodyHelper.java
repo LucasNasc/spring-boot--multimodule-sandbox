@@ -1,9 +1,6 @@
 package br.com.nascimento.exception;
 
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;

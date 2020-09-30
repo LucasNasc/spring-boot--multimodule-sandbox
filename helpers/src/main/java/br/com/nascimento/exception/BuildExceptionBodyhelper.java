@@ -55,10 +55,13 @@ public abstract class BuildExceptionBodyhelper {
                 .timestamp(DateUtils.formatOffsetDatetime(OffsetDateTime.now()))
                 .build();
     }
+
     public static ErrorDetail getInternalException(Exception ex) {
         return ErrorDetail.builder()
                 .title("Internal Error!")
                 .description(ex.getMessage())
+                .httpStatusCode(HttpStatus.BAD_REQUEST)
+                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
                 .developerMessage(ex.getClass().getName())
                 .timestamp(DateUtils.formatOffsetDatetime(OffsetDateTime.now()))
                 .build();
