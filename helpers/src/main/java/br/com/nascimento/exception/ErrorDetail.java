@@ -15,21 +15,20 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({ "title", "httpStatusCode", "code", "developerMessage", "description", "field" })
 public class ErrorDetail {
+    private String title;
 
     private HttpStatus httpStatusCode;
 
-    private String Title;
-
     private String code;
 
-    private String message;
+    private String developerMessage;
 
-    private OffsetDateTime timestamp;
+    private String timestamp;
 
     private String description;
 
     private String field;
-
 
 }
