@@ -1,5 +1,7 @@
 package br.com.nascimento;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -8,7 +10,15 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @MappedSuperclass
-public class AbstractEntity implements Serializable {
+public class AbstractEntity extends RepresentationModel<AbstractEntity>  implements Serializable {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
