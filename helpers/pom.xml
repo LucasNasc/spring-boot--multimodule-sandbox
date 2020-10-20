@@ -12,6 +12,11 @@
     <artifactId>helpers</artifactId>
     <dependencies>
         <dependency>
+            <groupId>br.com.nascimento</groupId>
+            <artifactId>security</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.3</version>

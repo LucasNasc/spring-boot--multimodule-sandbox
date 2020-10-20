@@ -46,7 +46,7 @@ public class ClienteServiceImpl implements ClienteService {
     public Cliente update(Cliente cliente) {
 
         try {
-            beanCopyNonNullProperties.copyProperties(cliente,findById(cliente.getId()));
+            beanCopyNonNullProperties.copyProperties(findById(cliente.getId()), cliente);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
