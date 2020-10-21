@@ -4,14 +4,10 @@ import br.com.nascimento.Cliente;
 import br.com.nascimento.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -24,11 +20,10 @@ public class ClienteResource {
     ClienteService service;
 
 
-    @GetMapping()
-    public ResponseEntity<?> listAll(Pageable pageable, @AuthenticationPrincipal UserDetails userDetails)
+    @GetMapping(path = "/cliente")
+    public ResponseEntity<?> listAll(Pageable pageable, PagedResourcesAssembler assembler)
     {
-        System.out.println(userDetails);
-        return ResponseEntity.ok(service.listAll(pageable));
+        return ResponseEntity.ok(assembler.toModel(service.listAll(pageable)));
     }
 
     @GetMapping(produces = {
@@ -40,8 +35,9 @@ public class ClienteResource {
         return ResponseEntity.ok(cliente);
     }
 
-
-    @PostMapping(consumes = {
+    @PostMapping(
+            path = ("/cliente"),
+            consumes = {
             MediaType.APPLICATION_JSON_VALUE
     })
     public ResponseEntity<?> save(@Valid @RequestBody Cliente cliente){
