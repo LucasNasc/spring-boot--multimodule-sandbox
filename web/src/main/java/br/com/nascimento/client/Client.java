@@ -1,28 +1,40 @@
 package br.com.nascimento.client;
 
 import br.com.nascimento.Cliente;
+import br.com.nascimento.PageableResponse;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.data.domain.Pageable;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
 
 public class Client {
+
     public static void main(String[] args) {
-        RestTemplate restTemplate = new RestTemplateBuilder()
-                .rootUri("http://localhost:8080/v1")
-                .basicAuthentication("vingadork", "master90").build();
+        RestTemplate restTemplate = getTemplateWithAuthentication(
+                                    "http://localhost:8080/v1",
+                                    "vingadork",
+                                    "master90");
 
-        Cliente cliente = restTemplate.getForObject("/cliente/{id}", Cliente.class, 3);
-        ResponseEntity<Cliente> entity = restTemplate.getForEntity("/cliente/{id}", Cliente.class, 3);
+        ResponseEntity<Cliente> entity = findByIdClient(restTemplate, 4L);
+        ResponseEntity<PageableResponse<Cliente>> entityList = restTemplate.exchange("/cliente",
+                HttpMethod.GET,null,
+                new ParameterizedTypeReference<PageableResponse<Cliente>>() {});
 
-        Cliente[] entityList = restTemplate.getForObject("/cliente", Cliente[].class);
-
-        System.out.println(cliente);
         System.out.println(entity);
-        System.out.println(Arrays.toString(entityList));
+        System.out.println(entityList.getBody());
 
     }
+
+    private static RestTemplate getTemplateWithAuthentication(String uri, String username, String password) {
+        return new RestTemplateBuilder()
+                .rootUri(uri)
+                .basicAuthentication(username, password).build();
+    }
+
+    private static ResponseEntity<Cliente> findByIdClient(RestTemplate restTemplate, Long id) {
+        return restTemplate.getForEntity("/cliente/{id}", Cliente.class, id);
+    }
+
 }
